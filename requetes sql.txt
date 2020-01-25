@@ -1,0 +1,240 @@
+create table t_user_role(id int primary key auto_increment, designation varchar(20), active char(1) default "1");
+
+create table t_user(id int primary key auto_increment, nom_user varchar(20), id_role int, active char(1),
+	constraint fk_user_to_role foreign key(id_role) references t_user_role(id)
+);
+
+create table t_eleve(id int primary key auto_increment, nom_eleve varchar(25), postnom_eleve varchar(25) not null, 
+	prenom_eleve varchar(25) not null, nom_tuteur varchar(25), num_telephone varchar(15), 
+	adresse varchar(50), date_naissance date, active char(1) default "1");
+
+
+create table t_frais(id int primary key auto_increment, designation varchar(20), montant_francs double, slug varchar(20), active char default "1");
+
+create table t_section(id int primary key auto_increment, designation varchar(20), active char(1) default "1");
+
+create table t_option(id int primary key auto_increment, designation varchar(20), id_section int, active char(1) default "1",
+	constraint fk_option_section foreign key(id_section) references t_section(id)
+);
+
+
+create table t_inscription(id int primary key auto_increment, id_eleve int unique, id_classe int unique,id_user int, date_inscription date, active char(1) default "1",
+	constraint fk_inscription_classe foreign key (id_classe) references t_classe(id),
+	constraint fk_inscription_eleve foreign key (id_eleve) references t_eleve(id),
+	constraint fk_inscription_user foreign key (id_user) references t_user(id)
+);
+
+create table if not exists t_filiere(id int primary key auto_increment,
+	designation varchar(20),
+	id_option int,
+	constraint fk_filiere_section foreign key (id_option) references t_option(id)
+);
+
+create table t_classe(id int primary key auto_increment, 
+	designation varchar(20), 
+	id_option int, 
+	id_filiere int,
+	active char(1), 
+	constraint fk_classe_filiere foreign key(id_filiere) references t_filiere(id),
+	constraint fk_classe_option foreign key(id_option) references t_option(id));
+
+create table t_paiement(id int primary key auto_increment, id_eleve int, id_classe int, id_frais int, id_user int, date_paiement date) values
+	constraint fk_paiement_eleve foreign key(id_eleve) references t_eleve(id),
+	constraint fk_paiement_classe foreign key(id_classe) references t_classe(id),
+	constraint fk_paiement_frais foreign key(id_frais) references t_frais(id),
+	constraint fk_paiement_user foreign key(id_user) references t_user(id)
+	);
+
+alter table t_filiere
+add column active char(1) default "1";
+
+
+alter table t_eleve
+add column genre char("1") default "M";
+
+
+
+alter table t_user
+add column password varchar(20) not null unique;
+
+// insertion
+insert into t_eleve(nom_eleve, postnom_eleve, prenom_eleve, nom_tuteur, num_telephone, adresse, date_naissance, genre) values
+	("kyamadjingi", "masengo", "jonathan", "ilunga", "0995053623", "2312, lumangi", "1994-10-10", "M"),
+	("amani", "makuta", "patient", "tibag", "0995000234", "1272, av ISTA", "1994-10-10", "M"),
+	("mujinga", "tshinyingi", "narcia", "tshinyingi", "0909834234", "892, av zambia", "1990-02-01", "F"),
+	("lumbu", "musipi", "chris", "lumbu", "0990003423", "2732, av morgue", "1994-10-10", "M"),
+	("mukund", "yav", "jessy", "mukund", "0899843433", "1025, av welenga", "1994-09-05", "F"),
+	("kayumba", "nyembo", "herman", "nyembo", "0829873423", "2002, av cuivre", "1993-11-10", "M"),
+	("kapend", "a ileng", "herve", "ileng", "0990890342", "2732, av manganeze", "1997-03-23", "M"),
+	("ndala", "nsenga", "daniella", "ndala", "0810923123", "8908, av kalenga", "2000-01-29", "M"),
+	("lumbu", "musipi", "chris", "lumbu", "0990003423", "2732, av morgue", "1994-10-10", "M"),
+	("kahilu", "katonge", "valery", "katonge", "0998723823", "2732, av ndjandja", "1993-08-15", "M")
+);
+
+
+INSERT INTO `t_user_role` (`id`, `designation`, `active`) VALUES 
+	(NULL, 'admin', '1'),
+	(NULL, 'secretaire', '1'),
+	(NULL, 'comptable', '1');
+
+INSERT INTO `t_user` (`id`, `nom_user`, `id_role`, `active`, `password`) VALUES 
+	(NULL, 'jean', '2', '1', 'jean_caisse');
+
+INSERT INTO `t_section` (`id`, `designation`, `active`) VALUES 
+	(NULL, 'Maternelle', '1'),
+	(NULL, 'Primaire', '1'),
+	(NULL, 'Secondaire', '1');
+
+INSERT INTO `t_option` (`id`, `designation`, `id_section`, `active`) VALUES 
+	(NULL, 'Maternelle', '1', '1'),
+	(NULL, 'Primaire', '2', '1'),
+	(NULL, 'litteraire', '3', '1'), 
+	(NULL, 'technique', '3', '1');
+
+
+INSERT INTO `t_filiere` (`id`, `designation`, `id_option`, `active`) VALUES 
+	(NULL, 'électricité', '4', '1'),
+	(NULL, 'compt et gestion', '4', '1');
+
+INSERT INTO `t_classe` (`id`, `designation`, `id_option`, `id_filiere`, `active`) VALUES 
+	(NULL, '1ere', '1', NULL, '1'),
+	(NULL, '2eme', '1', NULL, '1'),
+	(NULL, '3ere', '1', NULL, '1'),
+	(NULL, '1ere', '2', NULL, '1'),
+	(NULL, '2eme', '2', NULL, '1'),
+	(NULL, '3ere', '2', NULL, '1'),
+	(NULL, '4eme', '2', NULL, '1'),
+	(NULL, '5ere', '2', NULL, '1'),
+	(NULL, '6eme', '2', NULL, '1'),
+	(NULL, '3ere', NULL, '1', '1'),
+	(NULL, '4eme', NULL, '1', '1'),
+	(NULL, '5ere', NULL, '1', '1'),
+	(NULL, '6eme', NULL, '1', '1'),
+	(NULL, '3ere', NULL, '2', '1'),
+	(NULL, '4eme', NULL, '2', '1'),
+	(NULL, '5ere', NULL, '2', '1'),
+	(NULL, '6eme', NULL, '2', '1'),
+	(NULL, '3ere', NULL, '3', '1'),
+	(NULL, '4eme', NULL, '3', '1'),
+	(NULL, '5ere', NULL, '3', '1'),
+	(NULL, '6eme', NULL, '3', '1'),
+	(NULL, '3ere', NULL, '4', '1'),
+	(NULL, '4eme', NULL, '4', '1'),
+	(NULL, '5ere', NULL, '4', '1'),
+	(NULL, '6eme', NULL, '4', '1'),
+	(NULL, '3ere', NULL, '5', '1'),
+	(NULL, '4eme', NULL, '5', '1'),
+	(NULL, '5ere', NULL, '5', '1'),
+	(NULL, '6eme', NULL, '5', '1');
+
+
+
+INSERT INTO `t_inscription` (`id_eleve`, `id_classe`, `id_user`, `date_inscription`, `active`) VALUES 
+	('1', '2', '1', '2020-01-08', '1'), 
+	('2', '2', '1', '2020-01-08', '1'),
+	('3', '2', '1', '2020-01-08', '1'), 
+	('4', '2', '1', '2020-01-08', '1'), 
+	('5', '2', '1', '2020-01-08', '1'), 
+
+	('6', '15', '1', '2020-01-08', '1'), 
+	('7', '15', '1', '2020-01-08', '1'), 
+	('8', '15', '1', '2020-01-08', '1'), 
+	('9', '15', '1', '2020-01-08', '1'), 
+	('10', '15', '1', '2020-01-08', '1');
+
+INSERT INTO `t_frais` (`id`, `designation`, `montant_francs`, `slug`, `active`) VALUES 
+	(NULL, 'inscription', '35000', 'tous', '1'),
+	(NULL, 'transport', '35000', 'tous', '1'),
+	(NULL, 'inscription', '35000', 'tous', '1'),
+	(NULL, 'FIP', '25000', 'tous', '1'),
+	(NULL, 'FAP', '12500', 'tous', '1'),
+	(NULL, 'supplementaire', '35000', 'finalistes', '1'),
+	(NULL, 'participation', '52000', 'finaliste', '1')
+;
+
+INSERT INTO `t_paiement` (`id`, `id_eleve`, `id_frais`, `id_user`, `date_paiement`) VALUES 
+	(NULL, '2', '1', '1', '2020-01-08'),
+	(NULL, '3', '1', '1', '2020-01-08'),
+	(NULL, '4', '1', '1', '2020-01-08'),
+	(NULL, '5', '1', '1', '2020-01-08'),
+	(NULL, '6', '1', '1', '2020-01-08'),
+	(NULL, '7', '1', '1', '2020-01-08'),
+	(NULL, '8', '1', '1', '2020-01-08'),
+	(NULL, '9', '1', '1', '2020-01-08'),
+	(NULL, '10', '1', '1', '2020-01-08');
+
+
+
+select id, designation, id_option, id_filiere from t_classe
+	where (id_option IS NOT null and id_filiere is NULL)
+    	OR
+        (id_option is NULL and id_filiere is NOT null)
+    ;
+
+select id, designation, id_option, id_filiere from t_classe
+	where (
+		(id_option = "1" and id_filiere is NULL)
+    	OR
+
+        (id_option is NULL and id_filiere = "1")
+        );
+
+select t_classe.id, t_classe.designation, t_filiere.designation, t_classe.id_filiere 
+	from t_classe, t_filiere
+	 where t_classe.id_filiere = t_filiere.id
+     and t_classe.id_filiere = 7
+	 and t_classe.active="1";
+
+
+	CREATE OR REPLACE VIEW v_eleves_inscripts as 
+		SELECT e.id, e.nom_eleve, e.postnom_eleve, e.prenom_eleve,c.id as id_classe, c.designation as classe, f.designation
+			FROM t_eleve as e, t_classe as c, t_filiere as f, t_inscription as i
+			WHERE (e.id = i.id_eleve and c.id = i.id_classe)
+			and (c.id_filiere = f.id);
+
+
+DELIMITER |
+CREATE PROCEDURE p_effectuer_paiement(IN eleve int, IN frais int, IN user int)
+BEGIN
+	INSERT INTO t_paiement (id_eleve, id_frais, id_user, date_paiement)
+	values (eleve, frais, user, CURDATE());
+END |
+
+DELIMITER |
+CREATE PROCEDURE p_eleve_classe(IN classe)
+BEGIN
+SELECT e.id, e.nom_eleve, e.postnom_eleve, e.prenom_eleve,c.id as id_classe,
+		c.designation, f.designation 
+	FROM t_eleve as e, t_classe as c, t_filiere as f,
+		t_inscription as i 
+	WHERE (e.id = i.id_eleve and c.id = i.id_classe) 
+	and c.id_filiere = f.id 
+	and i.id_classe= classe;
+END |
+
+
+select e.id, e.nom_eleve, e.postnom_eleve, f.designation, f.montant_francs
+from t_eleve as e, t_frais as f, t_paiement as p, t_inscription as i 
+where e.id = i.id_eleve
+and e.id = p.id_eleve
+and i.id_eleve = p.id_eleve
+and f.id = p.id_frais
+and e.active = "1"
+and i.active = "1";
+
+valery@22,,
+
+select f.id, f.designation from t_frais as f
+WHERE f.id NOT IN 
+(select f.id from t_frais as f, t_paiement as p, t_eleve as e
+	where f.id = p.id_frais
+	and p.id_eleve = e.id
+ );
+
+
+create table t_mouvement(id int primary key auto_increment, designation varchar(300),
+	date_mouvement date default current(),
+	entree_francs double, entree_dollars double,
+	sortie_francs double, sortie_dollars double,
+	ops varchar(15)
+);
