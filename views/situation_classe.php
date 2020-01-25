@@ -3,7 +3,7 @@
 	extract($_GET);
 
 	require_once("../controlers/functions.php");
-
+	echo $id_classe;
 	$data = liste_paiement_eleve($id_classe);
 	$nbre_max = max_rows()->fetch();
 	$titre = titre_tableau();
@@ -69,7 +69,6 @@
 		<tbody id="myTable">
 
 		<?php
-			if(count((array)$data) > 0){
 		 foreach ($data as $datas ) { ?>
 			<tr>
 				<td><?php echo $datas->id; ?></td>
@@ -96,10 +95,8 @@
 				<td></td>
 
 			</tr>
-		<?php } }
-			else{
-				echo "<p>aucune données à afficher pour cette classe</p>";
-			}
+		<?php  }
+			
 		?>
 		</tbody>
 	</table>

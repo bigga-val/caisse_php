@@ -12,7 +12,7 @@
  		select designation from t_frais;
  		");
 	$liste = Frais::afficher_frais();
-	print_r($liste);
+//	print_r($liste);
  	$req = frais_paiement_eleve($id_eleve);
  	$reglement = frais_non_paiement_eleve($id_eleve);
 //	print_r($reglement->fetch()); 	
@@ -126,27 +126,29 @@
 								<td><?php echo $data->designation; ?></td>
 								<td><?php echo $data->montant_dollars; ?></td>
 								<td><?php echo $data->montant_francs; ?></td>
-								<td><a class="btn btn-outline-primary" data-toggle="modal" data-target="#modale">Regler paiement</a></td>
-							</tr>
-							<div class="modal" id="modale">
+								<td>
+								<div class="modal" id="modale">
 								<div class="modal-dialog">
 									<div class="modal-content">
 										<div class="modal-head">
 											<h4>Confirmer le paiement</h4>
 										</div>
 										<div class="modal-body">
-											<p>montant de 
-												<?php echo $data->montant_dollars; ?> pour le mois de
-												<?php echo $data->designation; ?>
+											<p>vmontant de 
+												<?php echo $data->id; ?> pour le mois de
+												<?php echo $data->montant_francs; ?>
 											</p>
 										</div>
 										<div class="modal-footer">
 											footer du modale
-											https://github.com/bigga-val/caisse_php.git
 										</div>
 									</div>
 								</div>
 							</div>
+							</td>
+								<td><a class="btn btn-outline-primary" data-toggle="modal" data-target="#modale">Regler paiement</a></td>
+							</tr>
+							
 							<?php
 								}
 							?>
